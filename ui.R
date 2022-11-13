@@ -119,7 +119,7 @@ ui <- dashboardPage(
           div(
             selectInput(
               inputId = "df1", label = "Select Dataset",
-              choices = adam_listf,
+              choices = adam_listf[!is.na(adam_listf)],
               selected="adlbhy"
             )
           ),div(
