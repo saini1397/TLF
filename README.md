@@ -4,7 +4,7 @@
 
 <!-- badges: end -->
 
-The goal of this R Shiny ADaM TLF Application is to produce a ADaM Analysis Dashboard using Shiny moduler framework. 
+The goal of this R Shiny ADaM TLF Application is to produce a ADaM Analysis Dashboard using Shiny modular framework. 
 
 ## Access
 
