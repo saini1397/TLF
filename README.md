@@ -11,7 +11,7 @@ The goal of this R Shiny ADaM TLF Application is to produce a ADaM Analysis Dash
 The ADaM TLF Application is deployed to shinyapps.io. Link to Application is provided below.
 
 ``` r
-https://cdiscdata.shinyapps.io/TLFF/
+https://saini.shinyapps.io/TLFF/
 ```
 
 The ADaM TLF Application package could be accessed locally by cloning the [GitHub repository](https://github.com/saini1397/TLF
