@@ -119,7 +119,7 @@ ui <- dashboardPage(
           div(
             selectInput(
               inputId = "df1", label = "Select Dataset",
-              choices = adam_listf[!is.na(adam_listf)],
+              choices = "adlbhy",
               selected="adlbhy"
             )
           ),div(
@@ -132,14 +132,14 @@ ui <- dashboardPage(
           div(
             selectInput(
               inputId = "f1", label = "Select Parameter:",
-              choices = c("NULL")
+              choices = head(unique(adlbhy$PARAM),3)
             )
           ),
           div(
             selectInput(
-              inputId = "f4", label = "Select Graph Type:",
-              choices = c("Bar Chart","Box Plot","Line/Scatter Plot"),
-              multiple = FALSE
+              inputId = "f4", label = "Select Subjects:",
+              choices = c("NULL"),
+              multiple = TRUE
             )
           ),
           div(

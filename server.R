@@ -13,6 +13,7 @@ server <- (function(input, output,session) {
     get(input$df1)
   })
   
+  
   # To get Treatment Variable
   
   trt_vart <- reactive({
@@ -47,7 +48,7 @@ server <- (function(input, output,session) {
     
     shinyWidgets::updatePickerInput(session, "l1",
                       choices = unique(names(x1())),
-                      selected=names(x1())[1:5],
+                      selected=c("USUBJID","AETERM","AEDECOD","AESOC","ASTDY","AENDY","AEREL","AESEV","AEOUT"),
                       options = shinyWidgets::pickerOptions(
                         actionsBox = TRUE,
                         title = "Please select Columns to Display",
@@ -71,25 +72,36 @@ server <- (function(input, output,session) {
     
     
     updateSelectInput(session, "t1",
-                      choices = c(names(x2())[!names(x2()) %in% c("TRTA","TRTP","TRTAN","TRTPN","SAFFL","ITTFL","EFFFL","STUDYID","USUBJID","SUBJID", "SITEID", "SITEGR1","ARM","TRT01P", "TRT01PN","TRT01A", "TRT01AN","TRTSDT", "TRTEDT", "TRTDURD","AVGDD")])
+                      choices = c(names(x2())[!names(x2()) %in% c("TRTA","TRTP","TRTAN","TRTPN","SAFFL","ITTFL","EFFFL","STUDYID","USUBJID","SUBJID", "SITEID", "SITEGR1","ARM","TRT01P", "TRT01PN","TRT01A", "TRT01AN","TRTSDT", "TRTEDT", "TRTDURD","AVGDD")]),
+                      selected="AESOC"
     )
     
     updateSelectInput(session, "t2",
-                      choices = c(names(x2())[!names(x2()) %in% c("TRTA","TRTP","TRTAN","TRTPN","SAFFL","ITTFL","EFFFL","STUDYID","USUBJID","SUBJID", "SITEID", "SITEGR1","ARM","TRT01P", "TRT01PN","TRT01A", "TRT01AN","TRTSDT", "TRTEDT", "TRTDURD","AVGDD")])
+                      choices = c(names(x2())[!names(x2()) %in% c("TRTA","TRTP","TRTAN","TRTPN","SAFFL","ITTFL","EFFFL","STUDYID","USUBJID","SUBJID", "SITEID", "SITEGR1","ARM","TRT01P", "TRT01PN","TRT01A", "TRT01AN","TRTSDT", "TRTEDT", "TRTDURD","AVGDD")]),
+                      selected="AEDECOD"
     )
     
-    updateSelectInput(session, "f1",
-                      choices = unique(x3()$PARAM)
+    # updateSelectInput(session, "f1",
+    #                   choices = head(unique(x3()$PARAM,3))
+    # )
+    
+    updateSelectInput(session, "f4",
+                      choices = unique(x3()$USUBJID),
+                      selected=head(unique(x3()$USUBJID),5)
     )
     
     updateSelectInput(session, "xaxis",
-                      choices = c(names(x3())[!names(x3()) %in% c("TRTA","TRTP","TRTAN","TRTPN","SAFFL","ITTFL","EFFFL","STUDYID","USUBJID","SUBJID", "SITEID", "SITEGR1","ARM","TRT01P", "TRT01PN","TRT01A", "TRT01AN","TRTSDT", "TRTEDT", "TRTDURD","AVGDD","RACE","RACEN")])
+                      choices = c(names(x3())[!names(x3()) %in% c("TRTA","TRTP","TRTAN","TRTPN","SAFFL","ITTFL","EFFFL","STUDYID","USUBJID","SUBJID", "SITEID", "SITEGR1","ARM","TRT01P", "TRT01PN","TRT01A", "TRT01AN","TRTSDT", "TRTEDT", "TRTDURD","AVGDD","RACE","RACEN")]),
+                      selected="ADY"
     )
     
     updateSelectInput(session, "yaxis",
-                      choices = c(names(x3() %>% dplyr::select(where(is.numeric)))) 
+                      choices = c(names(x3() %>% dplyr::select(where(is.numeric)))) ,
+                      selected="AVAL"
                        
     )
+    
+    
     
     
   })
@@ -122,24 +134,28 @@ server <- (function(input, output,session) {
   
   fig <- reactive({
     
-  if (grepl("Bar",input$f4)){  
-    x3()  %>% filter(.data[[input$filter3]]=="Y") %>% filter(PARAM==input$f1) %>% 
-      plot_ly(x=~.data[[input$xaxis]],y = ~.data[[input$yaxis]], color = ~.data[[trt_varf()]], type = "bar") %>% 
-      layout(title=paste0("Bar Chart for ",input$f1),xaxis=list(title=input$xaxis),yaxis=list(title=input$yaxis) )
+ #  if (grepl("Bar",input$f4)){  
+ #    x3() %>%  filter(ADY>=0 | ABLFL=="Y") %>% slice_head(n = 100) %>% 
+ #    filter(.data[[input$filter3]]=="Y") %>% filter(PARAM==input$f1) %>% 
+ #      plot_ly(x=~.data[[input$xaxis]],y = ~.data[[input$yaxis]], color = ~.data[[trt_varf()]], type = "bar") %>% 
+ #      layout(title=paste0("Bar Chart for ",input$f1),xaxis=list(title=input$xaxis),yaxis=list(title=input$yaxis) )
+ #    
+ #  }
+ #    
+ # else if (grepl("Box",input$f4)){  
+ #      x3() %>%  filter(ADY>=0) %>% slice_head(n = 100) %>% 
+ #     filter(.data[[input$filter3]]=="Y") %>% filter(PARAM==input$f1) %>% 
+ #        plot_ly(x=~.data[[input$xaxis]],y = ~.data[[input$yaxis]], color = ~.data[[trt_varf()]], type = "box") %>% 
+ #     layout(title=paste0("Box Plot for ",input$f1),xaxis=list(title=input$xaxis),yaxis=list(title=input$yaxis) )
+ # }  
     
-  }
     
- else if (grepl("Box",input$f4)){  
-      x3()  %>% filter(.data[[input$filter3]]=="Y") %>% filter(PARAM==input$f1) %>% 
-        plot_ly(x=~.data[[input$xaxis]],y = ~.data[[input$yaxis]], color = ~.data[[trt_varf()]], type = "box") %>% 
-     layout(title=paste0("Box Plot for ",input$f1),xaxis=list(title=input$xaxis),yaxis=list(title=input$yaxis) )
- }  
-    
-    else if (grepl("Scatter",input$f4)){  
-       x3()  %>% filter(.data[[input$filter3]]=="Y") %>% filter(PARAM==input$f1) %>% 
+     
+       x3() %>%  mutate(ADY=if_else(ADY<=0,0,ADY)) %>% filter( (ABLFL== "Y" | ADY>=0) & USUBJID %in% input$f4)  %>%  
+        filter(.data[[input$filter3]]=="Y") %>% filter(PARAM==input$f1) %>% 
       plot_ly(x = ~.data[[input$xaxis]], y = ~.data[[input$yaxis]], type = 'scatter', mode = 'scatter',color=~USUBJID)  %>% 
-        layout(title=paste0("Line & Scatter Plot for ",input$f1),xaxis=list(title=input$xaxis),yaxis=list(title=input$yaxis) )
-    }
+        layout(title=paste0("Line Plot for ",input$f1),xaxis=list(title=input$xaxis),yaxis=list(title=input$yaxis) )
+    
   })
   
   
@@ -154,6 +170,9 @@ server <- (function(input, output,session) {
           ))
       })
     })
+  
+ 
+  
 
   observeEvent(input$tb1, {
     
@@ -176,12 +195,32 @@ server <- (function(input, output,session) {
     })
   })
   
+  
+  # This will run immediately on startup, then completely turn itself off 
+  observeEvent(reactive({ TRUE }), {
+    output$listingo <- renderDataTable({
+      x1()  %>% filter(.data[[input$filter1]]=="Y") %>% select(one_of(input$l1)) %>% 
+        datatable(filter = 'top',  extensions = 'Buttons',options = list(
+          scrollX = TRUE,
+          pageLength = 25, autoWidth = TRUE,
+          dom = 'Bfrtip',
+          buttons = c('copy', 'csv', 'excel','pdf')
+        ))
+    })
+    
+    show("listing")
+    hide("table")
+    hide("figure")
+  })
+  
+  
   observeEvent(input$lb1, {
     show("listing")
     hide("table")
     hide("figure")
   })
   
+
   observeEvent(input$tb1, {
     hide("listing")
     show("table")
@@ -199,5 +238,6 @@ server <- (function(input, output,session) {
     hide("table")
     hide("figure")
   })
+  
   
 })
